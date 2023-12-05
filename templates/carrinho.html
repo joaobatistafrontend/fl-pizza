@@ -1,0 +1,27 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/carrinho.css' %}"/>
+    <title>iFood Carrinho</title>
+</head>
+<body>
+    <div class="container">
+        <h1>iFood Carrinho</h1>
+
+        <div class="cart">
+            <ul class="cart-items">
+                <!-- Itens do carrinho serão adicionados aqui -->
+            </ul>
+
+            <div class="cart-total">
+                <p>Total: R$ <span id="total">0.00</span></p>
+            </div>
+
+            <button class="checkout-btn">Finalizar Pedido</button>
+        </div>
+    </div>
+</body>
+</html>
