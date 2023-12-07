@@ -16,92 +16,60 @@
   </head>
   <body>
     <header>
-      <span>Carrinho de compras</span>
+      <span >Carrinho de compras</span>
+      
     </header>
     <main>
-      <div class="page-title">Seu Carrinho</div>
+
+      <a href="{% url "index" %}" class="page-title">Seu Carrinho</a>
       <div class="content">
         <section>
-          <table>
+          <table id="produtosTable">
             <thead>
               <tr>
                 <th>Produto</th>
                 <th>Preço</th>
-                <th>Quantidade</th>
-                <th>Total</th>
-                <th>-</th>
+                
               </tr>
             </thead>
             <tbody>
+              {% if produtos_no_carrinho %}
+
+              {% for produto in produtos_no_carrinho %}
               <tr>
+
                 <td>
                   <div class="product">
-                    <img src="https://picsum.photos/100/120" alt="" />
+                    {% if produto.imagem %}
+                        <img src="{{ produto.imagem.url }}" alt="{{ produto.nome_produto }}" />
+                    {% else %}
+                      <p>Imagem não disponível</p>
+                    {% endif %}
                     <div class="info">
-                      <div class="name">Nome do produto</div>
-                      <div class="category">Categoria</div>
+                      <div class="name">{{ produto.nome_produto }}</div>
+                    </div>
+                      <!-- Editar no CSS -->
+
+                    <div class="descricao">
+                      {{ produto.descricao}}...
                     </div>
                   </div>
                 </td>
-                <td>R$ </td>
                 <td>
-                  <div class="qty">
-                    <button><i class="bx bx-minus"></i></button>
-                    <span>1</span>
-                    <button><i class="bx bx-plus"></i></button>
-                  </div>
+                  {% if produto.valorMassa %}
+                    R$ {{ produto.valorMassa.valor_massa }}
+                  {% elif produto.valorPizza %}
+                      R$ {{ produto.valorPizza.valor }}
+                  {% elif produto.valor_esfihas %}
+                      R$ {{ produto.valorPizza.valor }}
+                  {% endif %}                
                 </td>
-                <td>R$ </td>
-                <td>
-                  <button class="remove"><i class="bx bx-x"></i></button>
-                </td>
+
+                {% endfor %}
+
               </tr>
-              <tr>
-                <td>
-                  <div class="product">
-                    <img src="https://picsum.photos/100/120" alt="" />
-                    <div class="info">
-                      <div class="name">Nome do produto</div>
-                      <div class="category">Categoria</div>
-                    </div>
-                  </div>
-                </td>
-                <td>R$ </td>
-                <td>
-                  <div class="qty">
-                    <button><i class="bx bx-minus"></i></button>
-                    <span>1</span>
-                    <button><i class="bx bx-plus"></i></button>
-                  </div>
-                </td>
-                <td>R$ </td>
-                <td>
-                  <button class="remove"><i class="bx bx-x"></i></button>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="product">
-                    <img src="https://picsum.photos/100/120" alt="" />
-                    <div class="info">
-                      <div class="name">Nome do produto</div>
-                      <div class="category">Categoria</div>
-                    </div>
-                  </div>
-                </td>
-                <td>R$ </td>
-                <td>
-                  <div class="qty">
-                    <button><i class="bx bx-minus"></i></button>
-                    <span>1</span>
-                    <button><i class="bx bx-plus"></i></button>
-                  </div>
-                </td>
-                <td>R$ </td>
-                <td>
-                  <button class="remove"><i class="bx bx-x"></i></button>
-                </td>
-              </tr>
+            {% endif %}
+
             </tbody>
           </table>
         </section>
@@ -109,23 +77,71 @@
           <div class="box">
             <header>Resumo da compra</header>
             <div class="info">
-              <div><span>Sub-total</span><span>R$ </span></div>
-              <div><span>Frete</span><span>Gratuito</span></div>
-              <div>
-                <button>
-                  Adicionar cupom de desconto
-                  <i class="bx bx-right-arrow-alt"></i>
-                </button>
+              <div id="subtotalInfo"><span>Sub-total</span>
+                <span>R$ 0.00</span>
               </div>
+              
             </div>
-            <footer>
+            <footer id="totalFooter">
               <span>Total</span>
-              <span>R$ </span>
+              <span>R$ 0.00</span>
             </footer>
           </div>
-          <button>Finalizar Compra</button>
+          <button  onclick="limpar()">Finalizar Compra</button>
         </aside>
       </div>
     </main>
   </body>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      calcularTotal();
+
+      function calcularTotal() {
+        var subtotal = 0;
+
+        var produtosTable = document.getElementById("produtosTable");
+        var rows = produtosTable.getElementsByTagName("tr");
+
+        for (var i = 0; i < rows.length; i++) {
+          var row = rows[i];
+          var precoColuna = row.cells[1];
+
+          if (precoColuna) {
+            var preco = extrairValor(precoColuna.textContent);
+            subtotal += preco;
+          }
+        }
+
+        var subtotalInfo = document.getElementById("subtotalInfo");
+        subtotalInfo.lastElementChild.textContent = "R$ " + subtotal.toFixed(2);
+
+        var totalFooter = document.getElementById("totalFooter");
+        totalFooter.lastElementChild.textContent = "R$ " + subtotal.toFixed(2);
+      }
+
+      function extrairValor(texto) {
+        return parseFloat(texto.replace("R$ ", "").replace(",", ".").trim()) || 0;
+      }
+    });
+    function recarregar() {
+    window.location.reload();
+  }
+  function limpar() {
+    alert('Compra finalizada');
+
+    // Limpa a tabela de produtos
+    var produtosTable = document.getElementById("produtosTable");
+    produtosTable.innerHTML = '<thead><tr><th>Produto</th><th>Preço</th></tr></thead><tbody></tbody><thead/>';
+
+    // Atualiza o total para zero
+    var totalFooter = document.getElementById("totalFooter");
+    totalFooter.lastElementChild.textContent = "R$ 0.00";
+
+    var subtotalInfo = document.getElementById("subtotalInfo");
+    subtotalInfo.lastElementChild.textContent = "R$ 0.00";
+    localStorage.removeItem(produtosTable)
+  }
+      
+    
+  </script>
 </html>

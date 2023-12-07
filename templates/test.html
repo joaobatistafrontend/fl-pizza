@@ -1,0 +1,111 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- ... Seu código existente ... -->
+  </head>
+  <body>
+    <header>
+      <span>Carrinho de compras</span>
+    </header>
+    <main>
+      <div class="page-title">Seu Carrinho</div>
+      <div class="content">
+        <section>
+          <table id="produtosTable">
+            <thead>
+              <tr>
+                <th>Produto</th>
+                <th>Preço</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if produtos_no_carrinho %}
+                {% for produto in produtos_no_carrinho %}
+                  <tr>
+                    <td>
+                      <div class="product">
+                        {% if produto.imagem %}
+                          <img src="{{ produto.imagem.url }}" alt="{{ produto.nome_produto }}" />
+                        {% else %}
+                          <p>Imagem não disponível</p>
+                        {% endif %}
+                        <div class="info">
+                          <div class="name">{{ produto.nome_produto }}</div>
+                        </div>
+                        <div class="descricao">
+                          {{ produto.descricao }}...
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      {% if produto.valorMassa %}
+                        R$ {{ produto.valorMassa.valor_massa }}
+                      {% elif produto.valorPizza %}
+                        R$ {{ produto.valorPizza.valor }}
+                      {% elif produto.valor_esfihas %}
+                        R$ {{ produto.valorPizza.valor }}
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+              {% endif %}
+            </tbody>
+          </table>
+        </section>
+        <aside>
+          <div class="box">
+            <header>Resumo da compra</header>
+            <div class="info">
+              <div id="subtotalInfo"><span>Sub-total</span><span>R$ 0.00</span></div>
+              <div><span>Frete</span><span>Gratuito</span></div>
+              <div>
+                <button>
+                  Adicionar cupom de desconto
+                  <i class="bx bx-right-arrow-alt"></i>
+                </button>
+              </div>
+            </div>
+            <footer id="totalFooter">
+              <span>Total</span>
+              <span>R$ 0.00</span>
+            </footer>
+          </div>
+          <button>Finalizar Compra</button>
+        </aside>
+      </div>
+    </main>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        calcularTotal();
+
+        function calcularTotal() {
+          var subtotal = 0;
+
+          var produtosTable = document.getElementById("produtosTable");
+          var rows = produtosTable.getElementsByTagName("tr");
+
+          for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            var precoColuna = row.cells[1];
+
+            if (precoColuna) {
+              var preco = extrairValor(precoColuna.textContent);
+              subtotal += preco;
+            }
+          }
+
+          var subtotalInfo = document.getElementById("subtotalInfo");
+          subtotalInfo.lastElementChild.textContent = "R$ " + subtotal.toFixed(2);
+
+          var totalFooter = document.getElementById("totalFooter");
+          totalFooter.lastElementChild.textContent = "R$ " + subtotal.toFixed(2);
+        }
+
+        function extrairValor(texto) {
+          return parseFloat(texto.replace("R$ ", "").replace(",", ".").trim()) || 0;
+        }
+      });
+    </script>
+  </body>
+</html>

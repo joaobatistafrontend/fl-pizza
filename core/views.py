@@ -5,7 +5,10 @@ from .models import TipoProduto,Produto
 from .form import ProdutoForm
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
-
+from django.shortcuts import get_object_or_404, render
+from django.http import JsonResponse
+from django.views import View
+from .models import Produto
 
 from django.shortcuts import render
 from django.views import View
@@ -24,16 +27,39 @@ class Index(TemplateView):
     
 
 
-class Carrinho(ListView):
+'''class Carrinho(View):
     template_name = 'carrinho02.html'
     model = Produto
+
     def get_context_data(self, **kwargs) :
         context = super().get_context_data(**kwargs)
         
-        context['produto'] = Produto.objects.filter()
+        context['produto'] = Produto.objects.get()
 
-        return context  
+        return context  '''
     
+class Carrinho(View):
+    template_name = 'carrinho.html'
+
+    def get(self, request):
+        produtos_no_carrinho = Produto.objects.filter(id__in=request.session.get('carrinho', []))
+        return render(request, self.template_name, {'produtos_no_carrinho': produtos_no_carrinho})
+
+def adicionar_ao_carrinho(request, produto_id):
+    produto = get_object_or_404(Produto, id=produto_id)
+    
+    carrinho = request.session.get('carrinho', [])
+    if produto_id not in carrinho:
+        carrinho.append(produto_id)
+        request.session['carrinho'] = carrinho
+
+    return JsonResponse({'mensagem': 'Produto adicionado ao carrinho com sucesso!'})
+
+
+
+
+
+
 def carrinho(request):
     # Obtenha os IDs dos produtos do carrinho armazenados no localStorage
     carrinho_ids = request.GET.getlist('produto', [])

@@ -159,42 +159,18 @@
       <div class="footer-last cartoon">Desenvolvido Por @Mathe0610</div>
   </footer>
   </body>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      // Encontrar todos os botões de "ADICIONAR AO CARRINHO"
-      var botoesAdicionarCarrinho = document.querySelectorAll('.adicionar-ao-carrinho');
-  
-      // Adicionar um ouvinte de eventos a cada botão
-      botoesAdicionarCarrinho.forEach(function (botao) {
-        botao.addEventListener('click', function () {
-          // Obter o ID do produto do atributo data-produto-id
-          var produtoId = botao.getAttribute('data-produto-id');
-  
-          // Aqui, você pode fazer o que for necessário para adicionar o produto ao carrinho
-          // Por exemplo, pode enviar uma solicitação AJAX para o servidor ou usar localStorage
-  
-          // Exemplo de uso do localStorage:
-          // Verificar se o localStorage é suportado pelo navegador
-          if (typeof Storage !== 'undefined') {
-            // Obter o carrinho do localStorage (se existir) ou inicializar um novo array
-            var carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-  
-            // Adicionar o ID do produto ao carrinho
-            carrinho.push(produtoId);
-  
-            // Armazenar o carrinho atualizado de volta no localStorage
-            localStorage.setItem('carrinho', JSON.stringify(carrinho));
-  
-            // Feedback ao usuário (você pode personalizar isso de acordo com suas necessidades)
-            alert('Produto adicionado ao carrinho!');
-          } else {
-            // Se o localStorage não for suportado, forneça uma mensagem de erro ou use uma abordagem alternativa
-            console.error('LocalStorage não suportado. Não é possível adicionar ao carrinho.');
-          }
+<script>
+    document.querySelectorAll('.adicionar-ao-carrinho').forEach(function(botao) {
+        botao.addEventListener('click', function() {
+            var produtoId = botao.getAttribute('data-produto-id');
+            // Aqui você pode enviar o ID do produto para a sua view usando AJAX ou outra abordagem
+            // Exemplo com fetch:
+            fetch('/adicionar-ao-carrinho/' + produtoId + '/')
+                .then(response => response.json())
+                .then(data => console.log(data));
         });
-      });
     });
-  </script>
+</script>
   
   <script src="script.js"></script>
 </html>

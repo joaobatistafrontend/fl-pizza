@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Carrinho de Compras</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho</title>
 </head>
 <body>
     <h1>Carrinho de Compras</h1>
@@ -9,11 +11,21 @@
     {% if produtos_no_carrinho %}
         <ul>
             {% for produto in produtos_no_carrinho %}
-                <li>{{ produto.nome_produto }} - {{ produto.valorMassa.valor_massa }}</li>
+                <li>        
+                    
+                    <h3>{{ produto.nome_produto }}</h3>
+                {% if produto.imagem %}
+                    <img src="{{ produto.imagem.url }}" alt="{{ produto.nome_produto }}" />
+                {% else %}
+                    <p>Imagem não disponível</p>
+                {% endif %}
+                    <p>{{ produto.descricao }}</p>
+                    <p>Valor: {{ produto.valorMassa.valor_massa }}</p>
+                </li>
             {% endfor %}
         </ul>
     {% else %}
-        <p>O carrinho está vazio.</p>
+        <p>O seu carrinho está vazio.</p>
     {% endif %}
 </body>
 </html>

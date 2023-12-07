@@ -5,7 +5,8 @@ from django.urls import path
 from .views import  *
 urlpatterns = [
     path('', Index.as_view(), name='index'),
-    path('ca/', carrinho, name='carrinho'),
+    path('ca/', Carrinho.as_view(), name='carrinho'),
+    path('adicionar-ao-carrinho/<int:produto_id>/', adicionar_ao_carrinho, name='adicionar_ao_carrinho'),
 
 ]
 if settings.DEBUG:
