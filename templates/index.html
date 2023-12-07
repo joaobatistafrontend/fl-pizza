@@ -19,10 +19,11 @@
           <ul>
             
             <li><a href="#menu">Cardápio</a></li>
-            <button>Login</button>
+            
 
        <!--CARRINHO-->
-             <a href="#" class="cart-button">
+              <a href="{% url 'carrinho' %}" class="cart-button">
+
               <i class="fas fa-shopping-cart fa-lg"></i>
          </a>
 
@@ -35,7 +36,7 @@
               Nós vendemos pizzas e esfirras.
             </p>
           </div>
-          <img src="{% static 'img/logo_bonna.jpg' %}" alt="Logo da Pizzaria" />
+          <img src="{% static 'img/logo_bonna.png' %}" alt="Logo da Pizzaria" />
         </div>
       </div>
     </header>
@@ -76,7 +77,7 @@
             <span><b>{{ produto.valorMassa.valor_massa }}</b></span>
           {% endif %}
         </p>
-        <button type="button">ADICIONAR!</button>
+        <button type="button" class="adicionar-ao-carrinho" data-produto-id="{{ produto.id }}">ADICIONAR!</button>
       </div>
     </div>
   {% endfor %}
@@ -94,17 +95,34 @@
         <p>
           {{ produto.descricao }}
           <br>
-          {% if produto.valorEsfihas %}
-            <span><b>{{ produto.valorEsfihas.valor_esfihas }}</b></span>
-          {% endif %}
+          <span><b>{{ produto.valor_esfihas }}</b></span>
+
         </p>
-        <button type="button">ADICIONAR!</button>
-      </div>
+        <button type="button" class="adicionar-ao-carrinho" data-produto-id="{{ produto.id }}">ADICIONAR!</button>      </div>
     </div>
   {% endfor %}
+
+
+
+  {% for produto in pizza %}
+  <div class="menu-card-item pizza ativo">
+    {% if produto.imagem %}
+      <img src="{{ produto.imagem.url }}" alt="{{ produto.nome_produto }}" />
+    {% else %}
+      <img src="{% static 'img/pizza_calabresa.webp' %}" alt="{{ produto.nome_produto }}" />
+    {% endif %}
+    <div class="menu-card-content">
+      <h3>{{ produto.nome_produto }}</h3>
+      <p>
+        {{ produto.descricao }}
+        <br>
+          <span><b>{{ produto.valorPizza.valor }}</b></span>
+
+      </p>
+      <button type="button" class="adicionar-ao-carrinho" data-produto-id="{{ produto.id }}">ADICIONAR!</button>    </div>
+  </div>
+{% endfor %}
 </div>
-
-
 
 
           <!-- Repetir estrutura acima para mais itens do cardápio se necessário -->
@@ -131,7 +149,8 @@
               <div class="footer-social cartoon">
                   <h4>Conecte-se Conosco</h4>
                   <div class="social-icons">
-                      <img src="img/instagram.png" alt="Instagram" />
+
+                      <img src"img/instagram.png" alt="Instagram" />
                       <img src="img/facebook.png" alt="Facebook" />
                   </div>
               </div>
@@ -140,5 +159,42 @@
       <div class="footer-last cartoon">Desenvolvido Por @Mathe0610</div>
   </footer>
   </body>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Encontrar todos os botões de "ADICIONAR AO CARRINHO"
+      var botoesAdicionarCarrinho = document.querySelectorAll('.adicionar-ao-carrinho');
+  
+      // Adicionar um ouvinte de eventos a cada botão
+      botoesAdicionarCarrinho.forEach(function (botao) {
+        botao.addEventListener('click', function () {
+          // Obter o ID do produto do atributo data-produto-id
+          var produtoId = botao.getAttribute('data-produto-id');
+  
+          // Aqui, você pode fazer o que for necessário para adicionar o produto ao carrinho
+          // Por exemplo, pode enviar uma solicitação AJAX para o servidor ou usar localStorage
+  
+          // Exemplo de uso do localStorage:
+          // Verificar se o localStorage é suportado pelo navegador
+          if (typeof Storage !== 'undefined') {
+            // Obter o carrinho do localStorage (se existir) ou inicializar um novo array
+            var carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  
+            // Adicionar o ID do produto ao carrinho
+            carrinho.push(produtoId);
+  
+            // Armazenar o carrinho atualizado de volta no localStorage
+            localStorage.setItem('carrinho', JSON.stringify(carrinho));
+  
+            // Feedback ao usuário (você pode personalizar isso de acordo com suas necessidades)
+            alert('Produto adicionado ao carrinho!');
+          } else {
+            // Se o localStorage não for suportado, forneça uma mensagem de erro ou use uma abordagem alternativa
+            console.error('LocalStorage não suportado. Não é possível adicionar ao carrinho.');
+          }
+        });
+      });
+    });
+  </script>
+  
   <script src="script.js"></script>
 </html>

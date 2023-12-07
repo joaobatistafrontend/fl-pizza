@@ -1,5 +1,6 @@
-
 from django.db import models
+from PIL import Image
+
 
 class TipoProduto(models.Model):
     nome = models.CharField(max_length=100)
@@ -62,7 +63,19 @@ class Produto(models.Model):
         return f"{self.tipo}: {self.nome_produto}"
     
 
+    def save(self, *args, **kwargs):
+            super().save(*args, **kwargs)
 
+            if self.imagem:
+                img = Image.open(self.imagem.path)
+
+                # Defina as larguras e alturas desejadas
+                largura_padrao = 168
+                altura_padrao = 168
+
+                # Redimensione a imagem
+                img.thumbnail((largura_padrao, altura_padrao))
+                img.save(self.imagem.path)
 
 
     

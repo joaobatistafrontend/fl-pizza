@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Carrinho de Compras</title>
+</head>
+<body>
+    <h1>Carrinho de Compras</h1>
+
+    {% if produtos_no_carrinho %}
+        <ul>
+            {% for produto in produtos_no_carrinho %}
+                <li>{{ produto.nome_produto }} - {{ produto.valorMassa.valor_massa }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>O carrinho está vazio.</p>
+    {% endif %}
+</body>
+</html>
